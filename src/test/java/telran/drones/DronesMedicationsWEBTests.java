@@ -1,13 +1,16 @@
 package telran.drones;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DronesMedicationsWebServiceApplicationTests {
+class DronesMedicationsWEBTests {
 
 	@Test
-	void contextLoads() {
+	void test() {
+		fail("Not yet implemented");
 	}
 
 }

@@ -12,7 +12,6 @@ import telran.drones.dto.*;
 @Getter
 public class Drone {
 	@Id
-	int id;
 	@Column(nullable = false)
 	String serialNumber;
 	@Column(nullable = false)
@@ -25,7 +24,6 @@ public class Drone {
 	@Column(nullable = false)
 	DroneState state;
 	public Drone(DroneDto droneDto) {
-		id = droneDto.id();
 		serialNumber = droneDto.serialNumber();
 		model = droneDto.model();
 		weightLimit = droneDto.weightLimit();
@@ -34,12 +32,12 @@ public class Drone {
 	}
 	
 public DroneDto build() {
-	return new DroneDto(id, serialNumber, model, weightLimit, persintage, state);
+	return new DroneDto(serialNumber, model, weightLimit, persintage, state);
 }
 
 @Override
 public String toString() {
-	return "Drone [id=" + id + ", serialNumber=" + serialNumber + ", model=" + model + ", weightLimit=" + weightLimit
+	return "Drone [serialNumber=" + serialNumber + ", model=" + model + ", weightLimit=" + weightLimit
 			+ ", persintage=" + persintage + ", state=" + state + "]";
 }
 

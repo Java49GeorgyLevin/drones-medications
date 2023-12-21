@@ -10,30 +10,29 @@ import telran.drones.dto.MedicationDto;
 @Getter
 public class Medication {
 	@Id
-	int id;
+	String code;	
 	@Column(nullable = false)
 	String name;
 	@Column(nullable = false)
 	int weight;
-	@Column(nullable = false)
-	String code;
+
 	public Medication(MedicationDto medicationDto) {
-		id = medicationDto.id();
+		code = medicationDto.code();		
 		name = medicationDto.name();
 		weight = medicationDto.weight();
-		code = medicationDto.code();
+
 	}
 
 
 	public MedicationDto build() {
 	
-	return new MedicationDto(id, name, weight, code);	
+	return new MedicationDto(code, name, weight);	
 	}
 
 
 	@Override
 	public String toString() {
-		return "Medication [id=" + id + ", name=" + name + ", weight=" + weight + ", code=" + code + "]";
+		return "Medication [code=" + code + ", name=" + name + ", weight=" + weight + "]";
 	}
 	
 	

@@ -5,40 +5,32 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import telran.drones.dto.*;
 
-
+import static telran.drones.api.ConstraintConstants.*;
 @Entity
 @Table(name="drones")
 @NoArgsConstructor
 @Getter
 public class Drone {
 	@Id
-	@Column(nullable = false)
+	@Column(length = MAX_DRONE_NUMBER_SIZE)
 	String serialNumber;
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	DroneModel model;
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false, name="weight_limit")
 	int weightLimit;
-	@Column(nullable = false)
-	float persintage;
+	@Column(nullable = false, updatable = false, name="battery_persintage")
+	byte batteryPercentage;
 	@Enumerated(value = EnumType.STRING)
 	@Column(nullable = false)
 	DroneState state;
-	public Drone(DroneDto droneDto) {
-		serialNumber = droneDto.serialNumber();
-		model = droneDto.model();
-		weightLimit = droneDto.weightLimit();
-		persintage = droneDto.prsintage();
-		state = droneDto.state();
+	
+	void setBatteryPersintage(byte pers) {
+		batteryPercentage = pers;		
 	}
 	
-public DroneDto build() {
-	return new DroneDto(serialNumber, model, weightLimit, persintage, state);
-}
+	void setDroneState(DroneState state) {
+		this.state = state;
+	}
 
-@Override
-public String toString() {
-	return "Drone [serialNumber=" + serialNumber + ", model=" + model + ", weightLimit=" + weightLimit
-			+ ", persintage=" + persintage + ", state=" + state + "]";
-}
 
 }

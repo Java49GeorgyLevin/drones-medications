@@ -12,7 +12,7 @@ public interface ConstraintConstants {
 	String MISSING_MEDICATION_CODE = "missing Medication Code";
 	String MEDICATION_CODE_REGEXP = "[A-Z_\\d]+";
 	String MISSING_MEDICATION_NAME = "missing Medication Name";
-	String MEDICATION_NAME_REGEXP = "[\\w-]+";
+	String MEDICATION_NAME_REGEXP = "[\\w-_]+";
 	String MAX_WEIGHT_VIOLATION = "Weight cannot be greater than " + MAX_WEIGHT;
 	String MAX_PERCENTAGE_VIOLATION = "Percent value cannot be greater than 100";
 

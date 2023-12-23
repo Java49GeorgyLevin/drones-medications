@@ -24,11 +24,11 @@ public class Drone {
 	@Column(nullable = false)
 	DroneState state;
 	
-	void setBatteryPersintage(byte pers) {
+	public void setBatteryPercentage(byte pers) {
 		batteryPercentage = pers;		
 	}
 	
-	void setDroneState(DroneState state) {
+	public void setDroneState(DroneState state) {
 		this.state = state;
 	}
 

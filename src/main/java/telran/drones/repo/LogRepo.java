@@ -6,4 +6,6 @@ import telran.drones.entities.*;
 
 public interface LogRepo extends JpaRepository<EventLog, Long> {
 
+	EventLog findByDrone(Drone drone);
+
 }

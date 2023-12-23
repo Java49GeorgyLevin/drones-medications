@@ -2,8 +2,6 @@ package drones.drones.controller;
 
 import telran.drones.api.*;
 import telran.drones.dto.DroneDto;
-import telran.drones.entities.Drone;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +19,9 @@ import telran.drones.service.DroneService;
 public class DronesController {
 	final DroneService droneService;
 	@PostMapping
-	DroneDto registerDrone(@RequestBody @Valid Drone drone) {
-		log.debug("received: {}", drone);
-		return droneService.registerDrone(drone);
+	DroneDto registerDrone(@RequestBody @Valid DroneDto droneDto) {
+		log.debug("received: {}", droneDto);
+		return droneService.registerDrone(droneDto);
 	}
 
 }

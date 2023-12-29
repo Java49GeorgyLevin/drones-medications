@@ -1,9 +1,9 @@
 package telran.drones.entities;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.*;
+import telran.drones.dto.LogDto;
 
 @Entity
 @RequiredArgsConstructor
@@ -26,5 +26,8 @@ public class EventLog {
 	@Column(nullable = false, updatable = false)
 	@NonNull
 	LocalDateTime timestamp;
+	public LogDto build() {
+		return new LogDto(timestamp, drone.number, drone.state, drone.batteryCapacity, medication.code);
+	};
 
 }

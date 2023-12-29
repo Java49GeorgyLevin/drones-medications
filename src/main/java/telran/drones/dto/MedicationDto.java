@@ -1,9 +1,12 @@
 package telran.drones.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import static telran.drones.api.ConstraintConstants.*;
-
+@AllArgsConstructor
+@Data
 public class MedicationDto {
 	
 	@NotEmpty(message = MISSING_MEDICATION_CODE) 

@@ -15,5 +15,6 @@ public interface ConstraintConstants {
 	String MEDICATION_NAME_REGEXP = "[\\w-_]+";
 	String MAX_WEIGHT_VIOLATION = "Weight cannot be greater than " + MAX_WEIGHT;
 	String MAX_PERCENTAGE_VIOLATION = "Percent value cannot be greater than 100";
+	String WRONG_MEDICATION_CODE_MESSAGE = "Medication code contains disallowed symbols";
 
 }

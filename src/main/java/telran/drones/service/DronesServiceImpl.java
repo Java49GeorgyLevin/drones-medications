@@ -1,18 +1,14 @@
 package telran.drones.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import telran.drones.api.PropertiesNames;
@@ -147,7 +143,6 @@ public class DronesServiceImpl implements DronesService {
 		}
 
 		drone.setBatteryCapacity((byte) Math.min((bCapacity + charge), 100));
-		droneRepo.save(drone);
 		newLog(drone);
 
 	}

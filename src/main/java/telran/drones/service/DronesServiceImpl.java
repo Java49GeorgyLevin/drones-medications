@@ -96,7 +96,6 @@ public class DronesServiceImpl implements DronesService {
 	@Override
 	public List<DroneDto> availableDronesForLoading() {
 		List<Drone> drones = droneRepo.getAvailableForLoading(percentageThreshold);
-		drones.forEach(d -> System.out.printf("%s\n", d.getNumber()));
 		log.trace("available drones: {}", drones);
 		List<DroneDto> dronesDto = drones.stream().map(d -> modelMapper.map(d, DroneDto.class)).toList();
 		return dronesDto;
@@ -111,7 +110,7 @@ public class DronesServiceImpl implements DronesService {
 
 	@Override
 	public List<LogDto> eventsByDrone(String droneNumber) {
-		if(droneRepo.existsById(droneNumber)) {
+		if(!droneRepo.existsById(droneNumber)) {
 			throw new DroneNotFoundException();
 		};
 		List<EventLog> logs = logRepo.findByDroneNumberOrderByTimestampDesc(droneNumber);
@@ -132,16 +131,15 @@ public class DronesServiceImpl implements DronesService {
 			try {
 				while(true) {
 					Thread.sleep(millisPerTimeUnit);
-//check analog:					List<Drone> drones = droneRepo.findAll();
-//check analog:					drones.forEach(d -> chargingDischarging(d));					
- 
-							droneRepo.findAllBy()
-							.forEach(d -> {
-								log.debug("drone {} before charging capacity: {}, state: {}", 
+
+					List<Drone> drones = droneRepo.findAll();
+					
+					drones.forEach(d -> {
+								if(d.getState() != DroneState.IDLE || (d.getState() == DroneState.IDLE && d.getBatteryCapacity() < 100 )) {
+									chargingDischarging(d);
+									log.debug("drone {} after charging capacity: {}, state: {}", 
 										d.getNumber(), d.getBatteryCapacity(), d.getState());
-								chargingDischarging(d);
-								log.debug("drone {} after charging capacity: {}, state: {}", 
-										d.getNumber(), d.getBatteryCapacity(), d.getState());
+								};
 							});
 
 
@@ -153,21 +151,22 @@ public class DronesServiceImpl implements DronesService {
 		thread.setDaemon(true);
 		thread.start();
 	}
-	@Transactional
+	@Transactional(readOnly = false)
 	private void chargingDischarging(Drone drone) {
 		DroneState dState = drone.getState();
 		byte bCapacity = drone.getBatteryCapacity();
+		int charge = capacityDeltaPerTimeUnit;
 		if(dState != DroneState.IDLE) {
 			 drone.setState(movesMap.get(dState));
-			 drone.setBatteryCapacity((byte) (bCapacity - capacityDeltaPerTimeUnit));
-			 newLog(drone);
+			 charge = - charge;
 		}
-		if(dState == DroneState.IDLE && bCapacity < 100) {
-			drone.setBatteryCapacity((byte) (bCapacity + capacityDeltaPerTimeUnit));
-		}		
+		
+		drone.setBatteryCapacity((byte) Math.min((bCapacity + charge), 100));
+		droneRepo.save(drone);
+		newLog(drone);
 
 	}
-	
+
 	private void newLog(Drone drone) {
 		String droneNumber = drone.getNumber();
 		EventLog log = logRepo.findFirst1ByDroneNumberOrderByTimestampDesc(droneNumber);

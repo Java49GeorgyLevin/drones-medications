@@ -48,13 +48,11 @@ class DronesServicePeriodicTaskTest {
 	private void logsNumberTest(int nLogs) {
 		List<LogDto> logs = dronesService.eventsByDrone(DRONE1);
 		assertEquals(nLogs, logs.size());
-
 	}
 
 	private void batteryCapacityTest(int capacityExpected) {
 		int capacityActual = dronesService.getPercentage(DRONE1);
 		assertEquals(capacityExpected, capacityActual);
-
 	}
 
 	private void availableDronesTest(int nDrones) {

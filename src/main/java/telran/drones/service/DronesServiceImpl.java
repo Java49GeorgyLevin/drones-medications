@@ -1,11 +1,8 @@
 package telran.drones.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -133,7 +130,7 @@ public class DronesServiceImpl implements DronesService {
 					Thread.sleep(millisPerTimeUnit);
 
 					List<Drone> drones = droneRepo.findAll();
-					
+//LIST or STREAM forEach ?					
 					drones.forEach(d -> {
 								if(d.getState() != DroneState.IDLE || (d.getState() == DroneState.IDLE && d.getBatteryCapacity() < 100 )) {
 									chargingDischarging(d);
@@ -141,8 +138,6 @@ public class DronesServiceImpl implements DronesService {
 										d.getNumber(), d.getBatteryCapacity(), d.getState());
 								};
 							});
-
-
 				}
 				
 			} catch (InterruptedException e) {
@@ -162,6 +157,7 @@ public class DronesServiceImpl implements DronesService {
 		}
 		
 		drone.setBatteryCapacity((byte) Math.min((bCapacity + charge), 100));
+//Why doesn't work without that SAVE ?
 		droneRepo.save(drone);
 		newLog(drone);
 

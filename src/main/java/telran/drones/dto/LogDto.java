@@ -2,6 +2,7 @@ package telran.drones.dto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public record LogDto(LocalDateTime timestamp, String droneNumber, DroneState droneState, int batteryPercentage,
 		String medicationCode) {
@@ -11,4 +12,6 @@ public record LogDto(LocalDateTime timestamp, String droneNumber, DroneState dro
 				timestamp.format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss")), droneNumber, droneState,
 				batteryPercentage, medicationCode);
 	}
+	
+
 }

@@ -5,8 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import telran.drones.dto.DroneNumberMedicationsAmount;
-import telran.drones.dto.DroneState;
+import telran.drones.dto.*;
 import telran.drones.entities.*;
 
 public interface LogRepo extends JpaRepository<EventLog, Long> {
@@ -17,11 +16,13 @@ public interface LogRepo extends JpaRepository<EventLog, Long> {
 
 	@Query("SELECT d.number as number, count(el.drone) as amount FROM EventLog el "
 			+ "right join el.drone d "
-			+ "where d.state='LOADING' or el.drone is null "
-			+ "group by d.number order by count(d.number) desc")
+			+ "where el.state='LOADING' or el.drone is null "
+			+ "group by d.number order by count(el.drone) desc")
 	List<DroneNumberMedicationsAmount> getAmountMedicationsForAllDrones();
 
-	List<EventLog> findByDroneNumber(String droneNumber);
+	List<EventLog> findByDroneNumberOrderByTimestampDesc(String droneNumber);
+
+	EventLog findFirst1ByDroneNumberOrderByTimestampDesc(String droneNumber);
 
 	
 

@@ -1,7 +1,10 @@
 package telran.drones.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,10 +28,14 @@ public class DronesServiceImpl implements DronesService {
 	final MedicationRepo medicationRepo;
 	final LogRepo logRepo;
 	final ModelMapper modelMapper;
+	final Map<DroneState, DroneState> movesMap;
 	@Value("${" + PropertiesNames.PERCENTAGE_THRESHOLD + ":25}")
 	byte percentageThreshold;
-	@Value("${" + PropertiesNames.PERIODIC_UNIT_MICROS + ":100}")
+	@Value("${" + PropertiesNames.PERIODIC_UNIT_MILLIS + ":100}")
 	long millisPerTimeUnit;
+	@Value("${" + PropertiesNames.CAPACITY_DELTA_TIME_UNIT + ":2}")
+	byte capacityDeltaPerTimeUnit;
+	
 	
 	@Override
 	@Transactional
@@ -59,14 +66,15 @@ public class DronesServiceImpl implements DronesService {
 		if(drone.getState() != DroneState.IDLE) {
 			throw new IllegalDroneStateException();
 		}
-		if(drone.getBatteryCapacity() < percentageThreshold) {
+		byte bCapacity = drone.getBatteryCapacity();
+		if(bCapacity < percentageThreshold) {
 			throw new LowBatteryCapacityException();
 		}
 		if(drone.getWeightLimit() < medication.getWeight()) {
 			throw new IllegalMedicationWeightException(); 
 		}
 		drone.setState(DroneState.LOADING);
-		EventLog eventLog = new EventLog(drone, medication, LocalDateTime.now());
+		EventLog eventLog = new EventLog(drone, medication, LocalDateTime.now(), drone.getState(), bCapacity );
 		logRepo.save(eventLog);
 		LogDto logDto = eventLog.build(); 
 		log.debug("saved log: {}", logDto);
@@ -89,7 +97,7 @@ public class DronesServiceImpl implements DronesService {
 	public List<DroneDto> availableDronesForLoading() {
 		List<Drone> drones = droneRepo.getAvailableForLoading(percentageThreshold);
 		drones.forEach(d -> System.out.printf("%s\n", d.getNumber()));
-		log.debug("available drones: {}", drones);
+		log.trace("available drones: {}", drones);
 		List<DroneDto> dronesDto = drones.stream().map(d -> modelMapper.map(d, DroneDto.class)).toList();
 		return dronesDto;
 	}
@@ -106,7 +114,8 @@ public class DronesServiceImpl implements DronesService {
 		if(droneRepo.existsById(droneNumber)) {
 			throw new DroneNotFoundException();
 		};
-		List<EventLog> logs = logRepo.findByDroneNumber(droneNumber);
+		List<EventLog> logs = logRepo.findByDroneNumberOrderByTimestampDesc(droneNumber);
+		log.trace("found logs: {}", logs);
 		List<LogDto> logsDto = logs.stream().map(EventLog::build).toList();
 		return logsDto;
 	}
@@ -123,16 +132,48 @@ public class DronesServiceImpl implements DronesService {
 			try {
 				while(true) {
 					Thread.sleep(millisPerTimeUnit);
-				//TODO processing event logs for each time unit
-				//Just stub method to be replaced with a real one in the HW #71
-				log.trace("Kuku");
+//check analog:					List<Drone> drones = droneRepo.findAll();
+//check analog:					drones.forEach(d -> chargingDischarging(d));					
+ 
+							droneRepo.findAllBy()
+							.forEach(d -> {
+								log.debug("drone {} before charging capacity: {}, state: {}", 
+										d.getNumber(), d.getBatteryCapacity(), d.getState());
+								chargingDischarging(d);
+								log.debug("drone {} after charging capacity: {}, state: {}", 
+										d.getNumber(), d.getBatteryCapacity(), d.getState());
+							});
+
+
 				}
 				
 			} catch (InterruptedException e) {
-				//Interruptions are not implemented
 			}
 		});
 		thread.setDaemon(true);
 		thread.start();
+	}
+	@Transactional
+	private void chargingDischarging(Drone drone) {
+		DroneState dState = drone.getState();
+		byte bCapacity = drone.getBatteryCapacity();
+		if(dState != DroneState.IDLE) {
+			 drone.setState(movesMap.get(dState));
+			 drone.setBatteryCapacity((byte) (bCapacity - capacityDeltaPerTimeUnit));
+			 newLog(drone);
+		}
+		if(dState == DroneState.IDLE && bCapacity < 100) {
+			drone.setBatteryCapacity((byte) (bCapacity + capacityDeltaPerTimeUnit));
+		}		
+
+	}
+	
+	private void newLog(Drone drone) {
+		String droneNumber = drone.getNumber();
+		EventLog log = logRepo.findFirst1ByDroneNumberOrderByTimestampDesc(droneNumber);
+		Medication medication = log.getMedication();
+		EventLog newLog = new EventLog(drone, medication, LocalDateTime.now(), drone.getState(), drone.getBatteryCapacity());
+		logRepo.save(newLog);
+		
 	}
 }

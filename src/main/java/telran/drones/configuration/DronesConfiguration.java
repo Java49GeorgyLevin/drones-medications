@@ -36,5 +36,4 @@ public class DronesConfiguration {
 		res.put(DroneState.RETURNING3, DroneState.IDLE);
 		return res;
 	}
-
 }

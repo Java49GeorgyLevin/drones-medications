@@ -23,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
-@SpringBootTest(properties = {PropertiesNames.PERIODIC_UNIT_MICROS  + "=1000000"})
+@SpringBootTest(properties = {PropertiesNames.PERIODIC_UNIT_MILLIS  + "=100"})
 @Sql(scripts = "classpath:test_data.sql")
 //('Drone-1', 'Middleweight', 300, 100, 'IDLE'),
 //('Drone-2', 'Middleweight', 300, 20, 'IDLE'),
@@ -107,5 +107,5 @@ class DronesServiceStaticTest {
 		assertEquals(mapExpection, mapRes);	
 		
 	}
-
+	
 }

@@ -22,12 +22,6 @@ public class Drone {
 	@Column(nullable = false,updatable = true, name="battery_capacity")
 	@Setter
 	byte batteryCapacity;
-//	public void setBatteryCapacity(byte batteryCapacity) {
-//		this.batteryCapacity = batteryCapacity;
-//	}
-//	public void setState(DroneState state) {
-//		this.state = state;
-//	}
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false,updatable = true)
 	@Setter

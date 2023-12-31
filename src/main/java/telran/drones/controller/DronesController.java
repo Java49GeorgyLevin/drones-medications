@@ -10,6 +10,7 @@ import telran.drones.dto.MedicationDto;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,8 +45,12 @@ public class DronesController {
 		return res;
 	}
 	
-//	- checking drone battery level for a given drone;
-	//TODO	Byte getPercentage(String droneNumber);
+	@GetMapping(UrlConstants.GET_DRONE_BATTERY_CAPACITY + "{" + UrlConstants.DRONE_NUMBER_IN_PATH + "}")
+		Byte getPercentage(@PathVariable(name=UrlConstants.DRONE_NUMBER_IN_PATH) String droneNumber) {
+			Byte res = dronesService.getPercentage(droneNumber);
+			log.trace("drone {} battery percentage: {}", droneNumber, res);
+			return res;
+		}
 	
 //	- checking history/event log for a given drone;
 	//TODO	List<LogDto> eventsByDrone(String droneNumber);

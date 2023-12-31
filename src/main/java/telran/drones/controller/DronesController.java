@@ -52,8 +52,13 @@ public class DronesController {
 			return res;
 		}
 	
-//	- checking history/event log for a given drone;
-	//TODO	List<LogDto> eventsByDrone(String droneNumber);
+	@GetMapping(UrlConstants.GET_DRONE_LOGS + "{" + UrlConstants.DRONE_NUMBER_IN_PATH + "}")
+		List<LogDto> eventsByDrone(@PathVariable(name=UrlConstants.DRONE_NUMBER_IN_PATH) String droneNumber) {
+			log.debug("recieved drone number: {}", droneNumber);
+			List<LogDto> res = dronesService.eventsByDrone(droneNumber);
+			log.trace("logs: {}", res);
+			return res;
+		}
 	
 //	- check how many medication items have been loaded for all drones, ordered by the amount in the descending order;
 	//TODO	List<DroneNumberMedicationsAmount> amountMedicationsForAllDrones();

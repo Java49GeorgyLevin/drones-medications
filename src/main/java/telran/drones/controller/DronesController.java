@@ -60,7 +60,11 @@ public class DronesController {
 			return res;
 		}
 	
-//	- check how many medication items have been loaded for all drones, ordered by the amount in the descending order;
-	//TODO	List<DroneNumberMedicationsAmount> amountMedicationsForAllDrones();
+	@GetMapping(UrlConstants.GET_DRONE_MEDICATIONS)
+	List<DroneNumberMedicationsAmount> amountMedicationsForAllDrones() {
+		List<DroneNumberMedicationsAmount> res = dronesService.amountMedicationsForAllDrones();
+		log.trace("drones-medications: {}", res);
+		return res;
+	}
 
 }

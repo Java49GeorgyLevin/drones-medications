@@ -5,14 +5,11 @@ import telran.drones.dto.DroneDto;
 import telran.drones.dto.DroneMedication;
 import telran.drones.dto.DroneNumberMedicationsAmount;
 import telran.drones.dto.LogDto;
-import telran.drones.dto.MedicationDto;
-
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -5,6 +5,8 @@ import telran.drones.dto.DroneDto;
 import telran.drones.dto.DroneMedication;
 import telran.drones.dto.DroneNumberMedicationsAmount;
 import telran.drones.dto.LogDto;
+import telran.drones.dto.MedicationDto;
+
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +58,14 @@ public class DronesController {
 			log.trace("logs: {}", res);
 			return res;
 		}
+	@GetMapping(UrlConstants.GET_DRONE_MEDICATIONS + "{" + UrlConstants.DRONE_NUMBER_IN_PATH + "}")
+		List<MedicationDto> checkLoadMedicationsByDrone(@PathVariable(name=UrlConstants.DRONE_NUMBER_IN_PATH) String droneNumber) {
+		log.debug("received drone number: {}", droneNumber);
+		List<MedicationDto> res = dronesService.checkLoadMedicationsByDrone(droneNumber);
+		log.trace("medications of the drone: {}", res);
+		return res;
+		
+	}
 	
 	@GetMapping(UrlConstants.GET_DRONE_MEDICATIONS)
 	List<DroneNumberMedicationsAmount> amountMedicationsForAllDrones() {
